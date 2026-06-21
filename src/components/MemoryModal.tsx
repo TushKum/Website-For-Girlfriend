@@ -38,14 +38,14 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
     >
       {/* Backdrop — blurs and dims the stage; click to dismiss. */}
       <div
-        className="absolute inset-0 bg-black/55 backdrop-blur-md"
+        className="absolute inset-0 bg-[#3a2730]/45 backdrop-blur-md"
         onClick={onClose}
         aria-hidden
       />
 
       {/* The glass panel. */}
       <motion.div
-        className="relative flex w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_30px_120px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl md:h-[78vh] md:max-h-[680px] md:flex-row"
+        className="relative flex w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-white/60 bg-white/55 shadow-[0_40px_120px_-30px_rgba(190,110,130,0.6)] backdrop-blur-2xl md:h-[78vh] md:max-h-[680px] md:flex-row"
         initial={{ opacity: 0, y: 28, scale: 0.965 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.97 }}
@@ -55,10 +55,10 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
         aria-label={memory.title}
       >
         {/* ── Left: the photograph ───────────────────────────────────── */}
-        <div className="relative h-64 w-full overflow-hidden bg-midnight md:h-full md:w-1/2">
+        <div className="relative h-64 w-full overflow-hidden bg-cream md:h-full md:w-1/2">
           {/* Blur-up placeholder shimmer until the hi-res frame paints. */}
           <div
-            className={`absolute inset-0 bg-gradient-to-br from-white/5 to-white/0 transition-opacity duration-700 ${
+            className={`absolute inset-0 bg-gradient-to-br from-rose-gold/15 to-white/0 transition-opacity duration-700 ${
               imgLoaded ? 'opacity-0' : 'opacity-100'
             }`}
           />
@@ -72,7 +72,7 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
             draggable={false}
           />
           {/* Cinematic edge gradient for seamless blend into the glass. */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-black/30" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-white/25" />
         </div>
 
         {/* ── Right: the narrative ───────────────────────────────────── */}
@@ -85,12 +85,12 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
             {/* Date · Location eyebrow. */}
             <p className="font-sans text-[11px] uppercase tracking-[0.3em] text-rose-gold/80">
               {memory.date}
-              <span className="mx-2 text-white/25">·</span>
+              <span className="mx-2 text-rose-gold/40">·</span>
               {memory.location}
             </p>
 
             {/* Title. */}
-            <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-champagne text-balance md:text-5xl">
+            <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-rose-gold-deep text-balance md:text-5xl">
               {memory.title}
             </h2>
 
@@ -98,7 +98,7 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
             <div className="my-7 h-px w-16 bg-gradient-to-r from-rose-gold/70 to-transparent" />
 
             {/* The story. */}
-            <p className="font-serif text-xl font-light leading-relaxed text-white/80 md:text-[1.4rem]">
+            <p className="font-serif text-xl font-light leading-relaxed text-[#6f5a55] md:text-[1.4rem]">
               {memory.caption}
             </p>
           </motion.div>
@@ -108,7 +108,7 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
         <button
           onClick={onClose}
           aria-label="Close memory"
-          className="group absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white/70 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-white/30 hover:bg-black/50 hover:text-white"
+          className="group absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-rose-gold/30 bg-white/60 text-rose-gold-deep backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-rose-gold/50 hover:bg-white/80 hover:text-rose-gold-deep"
         >
           <svg
             viewBox="0 0 24 24"

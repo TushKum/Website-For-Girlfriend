@@ -4,14 +4,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        // The premium gallery palette.
-        obsidian: '#050505',
-        midnight: '#0c0c0f',
-        champagne: '#ffe4e1',
-        'rose-gold': '#e8c3b9',
-        amber: {
-          glow: '#ffba6b',
+        // Soft, ethereal, deeply romantic palette.
+        blush: '#ffdde6',
+        petal: '#ffc6d5',
+        peach: '#ffe0cf',
+        champagne: '#fbe6d4',
+        cream: '#fff7f3',
+        'rose-gold': {
+          DEFAULT: '#c98b7e',
+          deep: '#a86a5f',
+          light: '#e6b9ad',
         },
+        // Legacy token kept for any stray reference.
+        obsidian: '#0c0a0b',
       },
       fontFamily: {
         // Elegant serif for the editorial memory copy.

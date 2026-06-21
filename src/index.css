@@ -5,12 +5,12 @@
 /*
  * Global, app-wide styling.
  * The 3D canvas paints most of the screen, so the document itself is the
- * "stage" — a deep obsidian-to-midnight gradient that reads as a private,
- * high-end gallery space.
+ * "stage" — a soft, glowing blush radial gradient that reads as a warm,
+ * ethereal, deeply romantic space.
  */
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   html,
@@ -21,12 +21,11 @@
   }
 
   body {
-    /* Obsidian → midnight. A soft off-center radial lifts the centre subtly,
-       like a single gallery spotlight bleeding into the dark. */
-    background-color: #050505;
+    /* Creamy centre glow → blush → soft rose at the edges, like dawn light. */
+    background-color: #ffe5ee;
     background-image:
-      radial-gradient(120% 120% at 50% 18%, #16161c 0%, #0c0c0f 42%, #050505 100%);
-    color: #f5f3f0;
+      radial-gradient(125% 125% at 50% 28%, #fff6f2 0%, #ffe6ef 46%, #ffd6e4 100%);
+    color: #6f5a55;
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -46,21 +45,21 @@
 }
 
 @layer utilities {
-  /* A refined vignette that frames the stage and deepens the corners. */
+  /* A soft light vignette that gently frames the stage with rose at the edges. */
   .vignette {
     background: radial-gradient(
-      120% 100% at 50% 50%,
-      transparent 55%,
-      rgba(0, 0, 0, 0.45) 100%
+      120% 100% at 50% 45%,
+      transparent 58%,
+      rgba(255, 170, 195, 0.28) 100%
     );
   }
 
-  /* Subtle film grain to kill banding in the dark gradient — premium finish. */
+  /* Whisper of film grain to kill banding in the gradient — premium finish. */
   .grain::after {
     content: '';
     position: absolute;
     inset: 0;
-    opacity: 0.035;
+    opacity: 0.025;
     pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
@@ -75,10 +74,10 @@
   width: 4px;
 }
 .lux-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 228, 225, 0.18);
+  background: rgba(201, 139, 126, 0.35);
   border-radius: 999px;
 }
 .lux-scroll {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 228, 225, 0.18) transparent;
+  scrollbar-color: rgba(201, 139, 126, 0.35) transparent;
 }

@@ -35,11 +35,11 @@ export default class SceneErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-obsidian px-8 text-center">
-            <p className="font-display text-xl text-champagne">
+          <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#ffeef3] px-8 text-center">
+            <p className="font-display text-xl text-rose-gold-deep">
               The memories couldn&rsquo;t bloom just now.
             </p>
-            <p className="mt-3 font-sans text-sm text-white/40">
+            <p className="mt-3 font-sans text-sm text-[#9a807a]">
               Please refresh — a stronger connection or device will bring them to life.
             </p>
           </div>

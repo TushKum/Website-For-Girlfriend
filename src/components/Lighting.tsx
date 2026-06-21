@@ -1,44 +1,40 @@
 /**
  * Lighting.tsx
  *
- * A deliberately cinematic lighting rig — the opposite of flat studio light.
+ * Soft, volumetric, shadow-free romance. Nothing harsh ever touches the scene:
  *
- *  - A warm AMBIENT wash with a rose-gold / champagne tint lifts the shadows
- *    so the dark scene never reads as muddy.
- *  - A sharp white DIRECTIONAL key light rakes across the photo planes from
- *    upper-right, giving the rounded cards crisp, dimensional edges and a
- *    subtle metallic specular roll-off (the materials carry a touch of
- *    metalness for exactly this).
- *  - A cool, low-intensity rim light from behind separates the globe from the
- *    obsidian background and adds depth.
+ *  - A bright warm AMBIENT wash so the frosted cards never fall into hard dark.
+ *  - A HEMISPHERE light (blush sky → peach ground) for that soft, enveloping,
+ *    "lit from everywhere" volumetric feel.
+ *  - A rosy SPOTLIGHT with maximum penumbra — a delicate, tactile key light
+ *    that gives the polaroids dimension without a single sharp shadow edge
+ *    (shadows are intentionally left off).
+ *  - A cool-cream fill from the opposite side to keep the shadowed sides alive.
  */
 export default function Lighting() {
   return (
     <>
-      {/* Warm ambient base — champagne / rose-gold, soft. */}
-      <ambientLight color="#ffe4e1" intensity={0.6} />
+      <ambientLight color="#fff1f0" intensity={1.15} />
 
-      {/* Sharp metallic key light. Casts the crisp dimension across planes. */}
-      <directionalLight
-        color="#ffffff"
-        intensity={1.5}
-        position={[5, 6, 8]}
+      <hemisphereLight
+        color="#ffd9e0" /* sky: blush */
+        groundColor="#ffe6d2" /* ground: warm peach */
+        intensity={0.9}
       />
 
-      {/* Warm champagne fill from the lower-left to round out the shadows. */}
-      <pointLight
-        color="#ffd9b3"
-        intensity={0.5}
-        distance={40}
-        position={[-8, -4, 4]}
+      {/* Rosy, gloriously soft key light. */}
+      <spotLight
+        color="#ffc8d4"
+        intensity={2.4}
+        position={[5, 7, 7]}
+        angle={0.7}
+        penumbra={1}
+        distance={50}
+        decay={2}
       />
 
-      {/* Cool rim light from behind for separation against the dark. */}
-      <directionalLight
-        color="#9fb6ff"
-        intensity={0.35}
-        position={[-6, 2, -10]}
-      />
+      {/* Gentle cream fill from the lower-left. */}
+      <pointLight color="#fff2e8" intensity={0.5} position={[-6, -3, 5]} distance={40} />
     </>
   );
 }
