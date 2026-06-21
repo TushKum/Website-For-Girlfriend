@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>It's For You - Now Smile!</title>
+  <!-- Google Fonts for a cartoonish style -->
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Comic Neue', cursive;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      background-size: cover;
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 5px dashed #ff6f61;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 36px;
+      color: #ff6f61;
+      margin-bottom: 20px;
+    }
+    .video-container {
+      margin: 20px auto;
+    }
+    .video-container img {
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .question p {
+      font-size: 20px;
+      margin: 20px 0;
+    }
+    .button-container {
+      margin-top: 20px;
+    }
+    .button {
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .button:hover {
+      background-color: #d85a50;
+      transform: translateY(-5px);
+    }
+    .yes {
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Really?</h1>
+    <div class="video-container">
+      <img src="./img/sleep.webp" alt="Cat Sleeping" width="200" height="200" />
+    </div>
+    <div class="question">
+      <p>Do you look like this while sleeping?</p>
+    </div>
+    <div class="button-container">
+      <button class="button yes" id="yes-btn" onclick="nextQuestion('yes')">Yes</button>
+      <button class="button no" onclick="nextQuestion('no')">No, I'm a cool sleeper!</button>
+    </div>
+  </div>
+
+  <audio id="music" autoplay loop>
+    <source src="./music/ahatamatarmusic.mp3" type="audio/mp3" />
+  </audio>
+
+  <script>
+    let yesFontSize = 16;
+    let noFontSize = 16;
+    function nextQuestion(answer) {
+      if (answer === 'yes') {
+        window.location.href = 'final.html'; // Adjust the URL for the final page
+      } else {
+        yesFontSize += 2;
+        noFontSize += 2;
+        document.getElementById('yes-btn').style.fontSize = `${yesFontSize}px`;
+        document.getElementById('yes-btn').innerHTML = 'Yes, I\'m a sleepyhead!';
+        document.querySelector('.no').style.fontSize = `${noFontSize}px`;
+        document.querySelector('.no').innerHTML = 'No, I\'m a ninja sleeper!';
+        if (noFontSize === 20) {
+          document.querySelector('.no').innerHTML = 'Just Accept the fact!';
+        } else if (noFontSize === 24) {
+          document.querySelector('.no').innerHTML = 'hawwww';
+        } else if (noFontSize === 28) {
+          document.querySelector('.no').innerHTML = 'accept pls dont waste my time';
+        } else if (noFontSize === 32) {
+          document.querySelector('.no').innerHTML = 'moyemoye';
+        } else if (noFontSize === 36) {
+          document.querySelector('.no').innerHTML = 'better click yes otherwise you are a puppy';
+        }
+      }
+    }
+  </script>
+
+<script>
+    eval(atob("ZG9jdW1lbnQuYm9keS5pbm5lckhUTUwgKz0gIjxwIHN0eWxlPSdwb3NpdGlvbjogZml4ZWQ7IGJvdHRvbTogMHB4OyBsZWZ0OiAwJTsgd2lkdGg6IDEwMCU7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYmEoMCwgMCwgMCwgMC44KTsgZm9udC1zaXplOiAyMHB4OyBmb250LXdlaWdodDogYm9sZDsgemktaW5kZXg6IDk5OTk7IHBvaW50ZXItZXZlbnRzOiBub25lOyB1c2VyLXNlbGVjdDogbm9uZTsnPk1hZGUgYnkgUGluYWtrLmlvPC9wPiI7"));
+    </script>
+    
+</body>
+</html>

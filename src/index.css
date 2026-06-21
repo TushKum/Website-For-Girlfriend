@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Global, app-wide styling.
+ * The 3D canvas paints most of the screen, so the document itself is the
+ * "stage" — a deep obsidian-to-midnight gradient that reads as a private,
+ * high-end gallery space.
+ */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    /* Obsidian → midnight. A soft off-center radial lifts the centre subtly,
+       like a single gallery spotlight bleeding into the dark. */
+    background-color: #050505;
+    background-image:
+      radial-gradient(120% 120% at 50% 18%, #16161c 0%, #0c0c0f 42%, #050505 100%);
+    color: #f5f3f0;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden; /* the experience is a fixed, full-bleed stage */
+    overscroll-behavior: none;
+  }
+
+  /* Respect users who prefer reduced motion — we still show everything,
+     just without the most kinetic flourishes. */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* A refined vignette that frames the stage and deepens the corners. */
+  .vignette {
+    background: radial-gradient(
+      120% 100% at 50% 50%,
+      transparent 55%,
+      rgba(0, 0, 0, 0.45) 100%
+    );
+  }
+
+  /* Subtle film grain to kill banding in the dark gradient — premium finish. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.035;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom, whisper-thin scrollbar for the modal narrative column. */
+.lux-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.lux-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 228, 225, 0.18);
+  border-radius: 999px;
+}
+.lux-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 228, 225, 0.18) transparent;
+}

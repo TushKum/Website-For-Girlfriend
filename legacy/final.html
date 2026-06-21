@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Your Gift</title>
+  <!-- Google Fonts for a cartoonish style -->
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Comic Neue', cursive;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      background-size: cover;
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 5px solid #ff6f61;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    h1, h2 {
+      font-family: 'Luckiest Guy', cursive;
+      color: #ff6f61;
+    }
+    .caption {
+      font-style: italic;
+      margin-top: 10px;
+      color: #555;
+    }
+    .gift-options {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .gift-option {
+      background-color: #fff;
+      border: 3px dashed #ff6f61;
+      border-radius: 15px;
+      padding: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 250px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .gift-option:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+    .gift-option img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .button {
+      padding: 10px 20px;
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #d85a50;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Awake &amp; Dreaming in Color!</h1>
+    <p class="caption">Which delightful gift will bring your day some sparkle?</p>
+    <h2>Beware: One of these is a trick!</h2>
+    
+    <div class="gift-options">
+      <div class="gift-option">
+        <img src="./img/gift1.webp" alt="Gift 1" height="200px" />
+        <h2>Pick Me!</h2>
+        <button class="button" onclick="selectGift('Gift 1')">Choose Gift 1</button>
+      </div>
+      <div class="gift-option">
+        <img src="./img/gift2.png" alt="Gift 2" height="200px" />
+        <h2>Pick Me?</h2>
+        <button class="button" onclick="selectGift('Gift 2')">Choose Gift 2</button>
+      </div>
+      <div class="gift-option">
+        <img src="./img/gift2.png" alt="Custom Gift" height="200px" />
+        <h2>I'm Adorable!</h2>
+        <button class="button" onclick="selectGift('Custom Gift')">Choose Custom Gift</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="music" autoplay loop>
+    <source src="./music/ahatamatarmusic.mp3" type="audio/mp3" />
+  </audio>
+
+  <script>
+    function selectGift(giftName) {
+      if (giftName === 'Custom Gift' || giftName === 'Gift 1') {
+        alert(giftName + ': Let us know your wish on the next page!');
+        window.location.href = 'contact.html';
+      } else if (giftName === 'Gift 2') {
+        alert(giftName + ': Oops! It seems empty! Try your luck with another option.');
+      }
+    }
+  </script>
+
+  <script>
+    eval(atob("ZG9jdW1lbnQuYm9keS5pbm5lckhUTUwgKz0gIjxwIHN0eWxlPSdwb3NpdGlvbjogZml4ZWQ7IGJvdHRvbTogMHB4OyBsZWZ0OiAwJTsgd2lkdGg6IDEwMCU7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYmEoMCwgMCwgMCwgMC44KTsgZm9udC1zaXplOiAyMHB4OyBmb250LXdlaWdodDogYm9sZDsgemktaW5kZXg6IDk5OTk7IHBvaW50ZXItZXZlbnRzOiBub25lOyB1c2VyLXNlbGVjdDogbm9uZTsnPk1hZGUgYnkgUGluYWtrLmlvPC9wPiI7"));
+  </script>
+    
+</body>
+</html>
