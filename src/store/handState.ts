@@ -26,6 +26,8 @@ export interface BurstEvent {
 export interface HandState {
   /** Is a hand currently tracked? */
   present: boolean;
+  /** Are TWO hands visible (clapping posture)? The carousel holds still then. */
+  twoHands: boolean;
   /** Smoothed pinch-midpoint (index+thumb) in mirrored NDC. */
   ndcX: number;
   ndcY: number;
@@ -45,6 +47,7 @@ export interface HandState {
 
 export const handState: HandState = {
   present: false,
+  twoHands: false,
   ndcX: 0,
   ndcY: 0,
   pinch: false,
@@ -60,6 +63,7 @@ const EMPTY: BurstEvent[] = [];
 /** Reset to the "no hand" baseline (called when tracking loses the hand). */
 export function clearHand(): void {
   handState.present = false;
+  handState.twoHands = false;
   handState.pinch = false;
   handState.pinchStrength = 0;
   handState.openPalm = false;
@@ -83,5 +87,10 @@ export function drainBursts(): BurstEvent[] {
 // lets us fire heart bursts without a webcam (handy for tuning). Stripped from
 // production builds.
 if (import.meta.env.DEV) {
-  (window as unknown as { __queueBurst?: typeof queueBurst }).__queueBurst = queueBurst;
+  const w = window as unknown as {
+    __queueBurst?: typeof queueBurst;
+    __handState?: HandState;
+  };
+  w.__queueBurst = queueBurst;
+  w.__handState = handState; // poke gestures from the console for testing
 }

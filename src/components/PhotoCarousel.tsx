@@ -80,19 +80,21 @@ export default function PhotoCarousel() {
     const group = groupRef.current;
     if (!group) return;
     const dt = Math.min(delta, 0.05);
-    const frozen = selected !== null;
+    // Hold the carousel still when a memory is open OR when two hands are up
+    // (a clap) — a clap should only release hearts, never move the carousel.
+    const hold = selected !== null || handState.twoHands;
 
     // ── Open-palm pull + scale ────────────────────────────────────────────
-    const pull = !frozen && handState.present && handState.openPalm;
+    const pull = !hold && handState.present && handState.openPalm;
     group.position.z = THREE.MathUtils.damp(group.position.z, pull ? PULL_Z : 0, 4, dt);
     const sc = THREE.MathUtils.damp(group.scale.x, pull ? PULL_SCALE : 1, 4, dt);
     group.scale.setScalar(sc);
 
     // ── Rotation ─────────────────────────────────────────────────────────
     let rotDelta = 0;
-    const pinching = !frozen && handState.present && handState.pinch;
+    const pinching = !hold && handState.present && handState.pinch;
 
-    if (frozen) {
+    if (hold) {
       angVel.current = THREE.MathUtils.damp(angVel.current, 0, 3, dt);
       rotDelta = angVel.current * dt;
       wasPinching.current = false;

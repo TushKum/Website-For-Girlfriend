@@ -107,6 +107,8 @@ function tick(now: number): void {
     const result = landmarker.detectForVideo(video, ts);
     process(result.landmarks[0], now);
     detectClap(result.landmarks, now);
+    // Expose two-hand (clapping) posture so the carousel can hold still.
+    handState.twoHands = (result.landmarks?.length ?? 0) >= 2;
   }
 
   schedule();
