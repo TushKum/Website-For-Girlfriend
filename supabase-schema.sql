@@ -81,3 +81,25 @@ create policy "read paintings bucket"
   on storage.objects for select using (bucket_id = 'paintings');
 create policy "upload to paintings bucket"
   on storage.objects for insert with check (bucket_id = 'paintings');
+
+-- Her quick photos & videos (cupcake collection) ----------------------------
+create table if not exists public.cupcakes (
+  id         uuid primary key default gen_random_uuid(),
+  title      text not null default 'Untitled',
+  media_type text not null check (media_type in ('image', 'video')),
+  media_path text not null,
+  created_at timestamptz not null default now()
+);
+alter table public.cupcakes enable row level security;
+create policy "read cupcakes" on public.cupcakes for select using (true);
+create policy "add cupcakes"  on public.cupcakes for insert with check (true);
+
+-- Public storage bucket for cupcakes (photos & videos) -----------------------
+insert into storage.buckets (id, name, public)
+values ('cupcakes', 'cupcakes', true)
+on conflict (id) do nothing;
+
+create policy "read cupcakes bucket"
+  on storage.objects for select using (bucket_id = 'cupcakes');
+create policy "upload to cupcakes bucket"
+  on storage.objects for insert with check (bucket_id = 'cupcakes');

@@ -244,6 +244,79 @@ export async function addPainting(
   return painting;
 }
 
+// ── Cupcake: quick photos & videos 🧁 ─────────────────────────────────────
+
+export interface Cupcake {
+  id: string;
+  title: string;
+  /** Can be image/* or video/* */
+  mediaType: 'image' | 'video';
+  /** Public URL (Supabase) or a data-URL (local). */
+  mediaURL: string;
+  createdAt: number;
+}
+
+const CUPCAKES_KEY = 'mg-cupcakes';
+
+interface CupcakeRow {
+  id: string | number;
+  title: string;
+  media_type: 'image' | 'video';
+  media_path: string;
+  created_at: string;
+}
+const rowToCupcake = (r: CupcakeRow): Cupcake => ({
+  id: String(r.id),
+  title: r.title,
+  mediaType: r.media_type,
+  mediaURL: r.media_path,
+  createdAt: new Date(r.created_at).getTime(),
+});
+
+/** Newest-first cupcakes (quick photo/video uploads). */
+export async function listCupcakes(): Promise<Cupcake[]> {
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('cupcakes')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error && data) return (data as CupcakeRow[]).map(rowToCupcake);
+    console.warn('[db] listCupcakes fell back to local:', error?.message);
+  }
+  return read<Cupcake[]>(CUPCAKES_KEY, []).sort((a, b) => b.createdAt - a.createdAt);
+}
+
+/** Upload + save a photo or video (Supabase Storage or local data-URL). */
+export async function addCupcake(title: string, file: File): Promise<Cupcake> {
+  const meta = { title: title.trim() || 'Untitled' };
+  const mediaType: 'image' | 'video' = file.type.startsWith('video/') ? 'video' : 'image';
+
+  if (supabase) {
+    const ext = file.name.split('.').pop() || (mediaType === 'video' ? 'mp4' : 'jpg');
+    const path = `${genId()}.${ext}`;
+    const up = await supabase.storage.from('cupcakes').upload(path, file);
+    if (!up.error) {
+      const { data: pub } = supabase.storage.from('cupcakes').getPublicUrl(path);
+      const { data, error } = await supabase
+        .from('cupcakes')
+        .insert({ ...meta, media_type: mediaType, media_path: pub.publicUrl })
+        .select()
+        .single();
+      if (!error && data) return rowToCupcake(data as CupcakeRow);
+      console.warn('[db] addCupcake insert fell back to local:', error?.message);
+    } else {
+      console.warn('[db] addCupcake upload fell back to local:', up.error.message);
+    }
+  }
+
+  const mediaURL = await fileToDataURL(file);
+  const cupcake: Cupcake = { id: genId(), ...meta, mediaType, mediaURL, createdAt: Date.now() };
+  const cupcakes = read<Cupcake[]>(CUPCAKES_KEY, []);
+  cupcakes.unshift(cupcake);
+  write(CUPCAKES_KEY, cupcakes);
+  return cupcake;
+}
+
 // ── Her own photo memories (shown in the 3D carousel) ──────────────────────
 
 export interface MemoryInput {

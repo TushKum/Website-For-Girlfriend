@@ -8,6 +8,7 @@ import SceneErrorBoundary from './components/SceneErrorBoundary';
 import LoginGate from './components/LoginGate';
 import Guestbook from './components/Guestbook';
 import Gallery from './components/Gallery';
+import CupcakeWidget from './components/Cupcake';
 import Sparkles from './components/Sparkles';
 import MusicToggle from './components/MusicToggle';
 import MomentOverlay from './components/MomentOverlay';
@@ -151,6 +152,7 @@ export default function App() {
       <WebcamPiP videoRef={videoRef} active={status === 'running'} />
       <Guestbook />
       <Gallery />
+      <CupcakeWidget />
       <MusicToggle />
       <Onboarding onAllow={handleAllow} onSkip={handleSkip} />
       <MomentOverlay />

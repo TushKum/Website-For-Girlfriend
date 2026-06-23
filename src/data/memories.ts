@@ -244,7 +244,7 @@ const RAW_MEMORIES: Memory[] = [
  */
 export const MEMORIES: Memory[] = RAW_MEMORIES.map((m) => ({
   ...m,
-  imageURL: localImageFor(m.id) ?? m.imageURL,
+  imageURL: (typeof m.id === 'number' ? localImageFor(m.id) : undefined) ?? m.imageURL,
 }));
 
 /** Stable list of every image URL — used by the preloader (referentially constant). */
