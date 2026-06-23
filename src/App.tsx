@@ -9,6 +9,7 @@ import LoginGate from './components/LoginGate';
 import Guestbook from './components/Guestbook';
 import Gallery from './components/Gallery';
 import CupcakeWidget from './components/Cupcake';
+import LoveCursor from './components/LoveCursor';
 import Sparkles from './components/Sparkles';
 import MusicToggle from './components/MusicToggle';
 import MomentOverlay from './components/MomentOverlay';
@@ -127,6 +128,7 @@ export default function App() {
     return (
       <main className="relative h-screen w-screen overflow-hidden">
         <LoginGate />
+        <LoveCursor />
       </main>
     );
   }
@@ -157,6 +159,7 @@ export default function App() {
       <Onboarding onAllow={handleAllow} onSkip={handleSkip} />
       <MomentOverlay />
       <LoadingScreen />
+      <LoveCursor />
     </main>
   );
 }

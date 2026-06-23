@@ -36,6 +36,19 @@
     @apply inline-block border-4 border-ink bg-blush px-3 py-1 font-mono
       text-xs font-bold uppercase tracking-[0.2em] text-ink;
   }
+
+  /* Framer-style sticker "stamp" — a rounded, rotated badge with a hard shadow.
+     Pair with a rotate-[…] utility per instance for that slapped-on look. */
+  .brutal-stamp {
+    @apply inline-flex items-center justify-center rounded-full border-4 border-ink
+      bg-cream px-4 py-2 font-mono text-[10px] font-bold uppercase
+      tracking-[0.25em] text-ink shadow-brutal-sm;
+  }
+
+  /* Oversized hero card with the largest hard shadow — the Framer "block". */
+  .brutal-card-xl {
+    @apply border-[5px] border-ink bg-cream shadow-brutal-lg;
+  }
 }
 
 @layer utilities {
@@ -112,6 +125,65 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* ── Framer-brutalist primitives ──────────────────────────────────────── */
+
+  /* Fluid, oversized display type that scales with the viewport — the giant,
+     edge-to-edge headlines that define Framer brutalist heroes. */
+  .display-fluid {
+    font-size: clamp(2.75rem, 11vw, 5.5rem);
+    line-height: 0.84;
+    letter-spacing: -0.025em;
+  }
+
+  /* Tight dot-grid backdrop (Framer's signature over the heavier line grid). */
+  .dot-grid {
+    background-image: radial-gradient(rgba(22, 13, 17, 0.16) 1.5px, transparent 1.7px);
+    background-size: 22px 22px;
+  }
+
+  /* Brushed-chrome metallic text — a cooler, harder counterpart to .holo-text. */
+  .chrome-text {
+    background-image: linear-gradient(
+      180deg,
+      #fffdfe 0%,
+      #e9d7df 30%,
+      #9a7e88 50%,
+      #efd9e1 64%,
+      #ffffff 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(2px 2px 0 rgba(22, 13, 17, 0.9));
+  }
+
+  /* Infinite horizontal ticker. Duplicate the track's children in markup so the
+     -50% translate loops seamlessly. */
+  .marquee {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee__track {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-right: 1.5rem;
+    animation: marquee 16s linear infinite;
+    will-change: transform;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
   }
 }
 

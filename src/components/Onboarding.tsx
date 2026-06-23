@@ -37,55 +37,79 @@ export default function Onboarding({ onAllow, onSkip }: OnboardingProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Brutalist scrim with exposed grid. */}
-          <div className="brutal-grid absolute inset-0 bg-cream/55 backdrop-blur-sm" />
+          {/* Brutalist scrim — tight dot-grid + film grain for an HD finish. */}
+          <div className="dot-grid grain absolute inset-0 bg-cream/55 backdrop-blur-sm" />
 
           <motion.div
-            className="brutal-card relative w-full max-w-md p-8 sm:p-9"
-            initial={{ opacity: 0, y: 24, rotate: -1 }}
+            className="brutal-card-xl relative w-full max-w-lg"
+            initial={{ opacity: 0, y: 28, rotate: -1.5 }}
             animate={{ opacity: 1, y: 0, rotate: 0 }}
             exit={{ opacity: 0, y: 16 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span className="brutal-chip absolute -left-3 -top-4 rotate-[-5deg] bg-rose-gold text-cream">
-              How to play
-            </span>
-
-            <div className="flex items-center gap-4">
-              <GestureDemo />
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose-gold-deep">
-                  [ for you ]
-                </p>
-                <h1 className="mt-1 font-grotesk text-3xl font-bold uppercase leading-[0.9] text-ink sm:text-4xl">
-                  Touch our
-                  <br /> memories
-                </h1>
+            {/* Marquee ticker — the Framer-brutalist signature header band. */}
+            <div className="marquee border-b-[5px] border-ink bg-ink py-2">
+              <div className="marquee__track font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-cream">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <span key={i} className="inline-flex items-center gap-6">
+                    <span className="holo-text">Touch our memories</span>
+                    <span>✦</span>
+                    <span>made for you</span>
+                    <span>★</span>
+                    <span>pinch · palm · clap · pray</span>
+                    <span>✦</span>
+                  </span>
+                ))}
               </div>
             </div>
 
-            <p className="mt-5 font-mono text-xs uppercase leading-relaxed tracking-wide text-ink/75">
-              Allow the camera &amp; use your hands — <span className="text-rose-gold-deep">pinch</span> to
-              turn, open palm to pull it near, <span className="text-rose-gold-deep">clap</span> for hearts,
-              <span className="text-rose-gold-deep"> pray</span> for lilies.
-            </p>
+            {/* Slapped-on rotated sticker stamp. */}
+            <span className="brutal-stamp absolute -right-4 top-16 rotate-[9deg] bg-rose-gold text-cream">
+              ✶ 2026
+            </span>
 
-            {denied && (
-              <p className="mt-5 border-4 border-ink bg-rose-gold/20 px-3 py-2 font-mono text-xs leading-relaxed text-rose-gold-deep">
-                {error ?? 'Camera access was blocked.'} Explore with your mouse below.
-              </p>
-            )}
+            <div className="p-8 sm:p-10">
+              <span className="brutal-chip -ml-1 rotate-[-3deg] bg-petal text-ink shadow-brutal-sm">
+                How to play
+              </span>
 
-            <div className="mt-7 flex flex-col gap-3">
-              <button onClick={onAllow} disabled={requesting} className="brutal-btn-rose w-full text-base">
-                {requesting ? 'Waking the camera…' : 'Allow camera & begin'}
-              </button>
-              <button
-                onClick={onSkip}
-                className="font-mono text-[11px] uppercase tracking-widest text-ink/50 underline-offset-4 transition-colors hover:text-rose-gold-deep hover:underline"
-              >
-                Explore without gestures →
-              </button>
+              {/* Oversized fluid hero headline — chrome + holo, hard drop shadow. */}
+              <h1 className="display-fluid mt-5 font-grotesk font-bold uppercase text-ink">
+                <span className="chrome-text">Touch</span>
+                <br />
+                <span className="holo-text">our</span>
+                <br />
+                memories
+              </h1>
+
+              <div className="mt-6 flex items-center gap-4">
+                <div className="shrink-0 border-4 border-ink bg-blush/50 p-1 shadow-brutal-sm">
+                  <GestureDemo />
+                </div>
+                <p className="font-mono text-xs uppercase leading-relaxed tracking-wide text-ink/75">
+                  Use your hands — <span className="text-rose-gold-deep">pinch</span> to turn, open
+                  palm to pull it near, <span className="text-rose-gold-deep">clap</span> for hearts,
+                  <span className="text-rose-gold-deep"> pray</span> for lilies.
+                </p>
+              </div>
+
+              {denied && (
+                <p className="mt-5 border-4 border-ink bg-rose-gold/20 px-3 py-2 font-mono text-xs leading-relaxed text-rose-gold-deep shadow-brutal-sm">
+                  {error ?? 'Camera access was blocked.'} Explore with your mouse below.
+                </p>
+              )}
+
+              <div className="mt-7 flex flex-col gap-3">
+                <button onClick={onAllow} disabled={requesting} className="brutal-btn-rose w-full text-base">
+                  {requesting ? 'Waking the camera…' : 'Allow camera & begin →'}
+                </button>
+                <button
+                  onClick={onSkip}
+                  className="font-mono text-[11px] uppercase tracking-widest text-ink/50 underline-offset-4 transition-colors hover:text-rose-gold-deep hover:underline"
+                >
+                  Explore without gestures →
+                </button>
+              </div>
             </div>
           </motion.div>
         </motion.div>

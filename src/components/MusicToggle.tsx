@@ -1,14 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 
-/** Public asset path that respects Vite's configured base. */
-const SONG_URL = `${import.meta.env.BASE_URL}music/ahatamatarmusic.mp3`;
+/**
+ * Public asset path that respects Vite's configured base.
+ * Song: "Ghar" — Bharat Chauhan. Drop the file at
+ * public/music/ghar-bharat-chauhan.mp3 for it to play.
+ */
+const SONG_URL = `${import.meta.env.BASE_URL}music/ghar-bharat-chauhan.mp3`;
 
 /**
  * MusicToggle.tsx
  *
- * A Y2K "boombox" button that plays your love song. Browsers block autoplay, so
- * it's a tap-to-play toggle (top-right). Loops softly; the glyph dances while
- * it's on. Swap the file in /public/music to change the song.
+ * A Y2K "boombox" button that plays your love song ("Ghar" by Bharat Chauhan).
+ * Browsers block autoplay, so it's a tap-to-play toggle (top-right). Loops
+ * softly; the glyph dances while it's on. Swap the file in /public/music to
+ * change the song.
  */
 export default function MusicToggle() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
