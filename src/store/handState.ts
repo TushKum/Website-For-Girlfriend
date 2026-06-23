@@ -28,6 +28,8 @@ export interface HandState {
   present: boolean;
   /** Are TWO hands visible (clapping posture)? The carousel holds still then. */
   twoHands: boolean;
+  /** Held prayer pose (palms together, fingers up)? Summons the lily shower. */
+  praying: boolean;
   /** Smoothed pinch-midpoint (index+thumb) in mirrored NDC. */
   ndcX: number;
   ndcY: number;
@@ -48,6 +50,7 @@ export interface HandState {
 export const handState: HandState = {
   present: false,
   twoHands: false,
+  praying: false,
   ndcX: 0,
   ndcY: 0,
   pinch: false,
@@ -64,6 +67,7 @@ const EMPTY: BurstEvent[] = [];
 export function clearHand(): void {
   handState.present = false;
   handState.twoHands = false;
+  handState.praying = false;
   handState.pinch = false;
   handState.pinchStrength = 0;
   handState.openPalm = false;

@@ -32,7 +32,7 @@ export default function Overlay() {
   }, [isOpen, close]);
 
   const hint = gestures
-    ? 'Pinch to turn · Open palm to draw near · Clap to release hearts'
+    ? 'Pinch to turn · Open palm to draw near · Clap for hearts · Pray for lilies'
     : 'Drag to turn · Tap a memory to open it';
 
   return (
@@ -40,40 +40,43 @@ export default function Overlay() {
       {/* Gentle framing: a soft light vignette. */}
       <div className="vignette absolute inset-0" />
 
-      {/* Title — recedes when a memory opens. */}
+      {/* Title — a raw brutalist badge, top-left. Recedes when a memory opens. */}
       <AnimatePresence>
         {started && !isOpen && (
           <motion.header
-            className="absolute inset-x-0 top-0 flex flex-col items-center pt-9 text-center"
+            className="absolute left-5 top-5"
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
           >
-            <p className="font-sans text-[10px] uppercase tracking-[0.5em] text-rose-gold/70">
-              For You
-            </p>
-            <h1 className="mt-2 font-display text-2xl font-medium tracking-wide text-rose-gold-deep md:text-3xl">
-              Where Our Story Lives
-            </h1>
+            <div className="brutal-card bg-cream px-4 py-2.5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-rose-gold-deep">
+                [ for you ]
+              </p>
+              <h1 className="font-grotesk text-xl font-bold uppercase leading-[0.9] text-ink md:text-2xl">
+                Where Our
+                <br /> Story Lives
+              </h1>
+            </div>
           </motion.header>
         )}
       </AnimatePresence>
 
-      {/* Explore hint. */}
+      {/* Explore hint — mono, in a hard-edged bar. */}
       <AnimatePresence>
         {started && !isOpen && (
           <motion.div
-            className="absolute inset-x-0 bottom-0 flex justify-center pb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="absolute inset-x-0 bottom-0 flex justify-center pb-7"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, delay: 0.8 }}
+            transition={{ duration: 0.9, delay: 0.8 }}
           >
             <motion.p
-              className="px-4 text-center font-sans text-[11px] uppercase tracking-[0.28em] text-[#a87f86]"
-              animate={{ opacity: [0.5, 0.85, 0.5] }}
-              transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
+              className="mx-4 border-4 border-ink bg-cream px-4 py-2 text-center font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-ink shadow-brutal-sm"
+              animate={{ y: [0, -3, 0] }}
+              transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
             >
               {hint}
             </motion.p>

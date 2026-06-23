@@ -43,9 +43,9 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
         aria-hidden
       />
 
-      {/* The glass panel. */}
+      {/* The brutalist panel. */}
       <motion.div
-        className="relative flex w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-white/60 bg-white/55 shadow-[0_40px_120px_-30px_rgba(190,110,130,0.6)] backdrop-blur-2xl md:h-[78vh] md:max-h-[680px] md:flex-row"
+        className="brutal-card relative flex w-full max-w-5xl flex-col overflow-hidden bg-cream md:h-[78vh] md:max-h-[680px] md:flex-row"
         initial={{ opacity: 0, y: 28, scale: 0.965 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.97 }}
@@ -83,22 +83,22 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
             transition={{ delay: 0.18, duration: 0.7, ease: 'easeOut' }}
           >
             {/* Date · Location eyebrow. */}
-            <p className="font-sans text-[11px] uppercase tracking-[0.3em] text-rose-gold/80">
+            <p className="inline-block border-4 border-ink bg-blush px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-ink">
               {memory.date}
-              <span className="mx-2 text-rose-gold/40">·</span>
+              <span className="mx-1.5 text-ink/40">/</span>
               {memory.location}
             </p>
 
             {/* Title. */}
-            <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-rose-gold-deep text-balance md:text-5xl">
+            <h2 className="mt-4 font-grotesk text-4xl font-bold uppercase leading-[0.92] text-ink text-balance md:text-5xl">
               {memory.title}
             </h2>
 
-            {/* Hairline divider. */}
-            <div className="my-7 h-px w-16 bg-gradient-to-r from-rose-gold/70 to-transparent" />
+            {/* Hard divider. */}
+            <div className="my-6 h-1 w-20 bg-ink" />
 
-            {/* The story. */}
-            <p className="font-serif text-xl font-light leading-relaxed text-[#6f5a55] md:text-[1.4rem]">
+            {/* The story — typed, like a love letter. */}
+            <p className="font-mono text-[15px] leading-relaxed text-ink/80 md:text-base">
               {memory.caption}
             </p>
           </motion.div>
@@ -108,7 +108,7 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
         <button
           onClick={onClose}
           aria-label="Close memory"
-          className="group absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-rose-gold/30 bg-white/60 text-rose-gold-deep backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-rose-gold/50 hover:bg-white/80 hover:text-rose-gold-deep"
+          className="brutal-card absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center bg-blush text-ink shadow-brutal-sm transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px]"
         >
           <svg
             viewBox="0 0 24 24"

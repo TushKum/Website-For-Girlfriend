@@ -5,9 +5,16 @@ import LoadingScreen from './components/LoadingScreen';
 import Onboarding from './components/Onboarding';
 import WebcamPiP from './components/WebcamPiP';
 import SceneErrorBoundary from './components/SceneErrorBoundary';
+import LoginGate from './components/LoginGate';
+import Guestbook from './components/Guestbook';
+import Sparkles from './components/Sparkles';
+import MusicToggle from './components/MusicToggle';
+import MomentOverlay from './components/MomentOverlay';
+import { recordVisit } from './services/db';
 import { useImagePreloader } from './hooks/useImagePreloader';
 import { IMAGE_URLS } from './data/memories';
 import { useVisionStore } from './store/useVisionStore';
+import { useGateStore } from './store/useGateStore';
 import { startHandEngine, stopHandEngine } from './vision/handEngine';
 import { WEBCAM_CONSTRAINTS } from './vision/visionConfig';
 
@@ -35,34 +42,74 @@ export default function App() {
   const status = useVisionStore((s) => s.status);
   const setStatus = useVisionStore((s) => s.setStatus);
   const start = useVisionStore((s) => s.start);
+  const setError = useVisionStore((s) => s.setError);
+  const unlocked = useGateStore((s) => s.unlocked);
 
-  /** Request the camera, attach the stream, and begin hand tracking. */
+  /**
+   * Request the camera, enter the experience as soon as it's granted, then warm
+   * up hand tracking in the background. Crucially we do NOT block entry on the
+   * MediaPipe model download — if that CDN fetch is slow or blocked, the camera
+   * and scene still come up immediately (gestures simply arrive a moment later,
+   * or degrade to the mouse fallback) instead of getting stuck on "Waking the
+   * camera…" or wrongly reporting the camera as blocked.
+   */
   const handleAllow = useCallback(async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
+      setError(
+        window.isSecureContext
+          ? 'No camera is available on this device.'
+          : 'The camera needs a secure page — open this over https or on localhost.',
+      );
       setStatus('denied');
       return;
     }
+
+    setError(null);
     setStatus('requesting');
+
+    let stream: MediaStream;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia(WEBCAM_CONSTRAINTS);
-      streamRef.current = stream;
-      const video = videoRef.current!;
-      video.srcObject = stream;
-      await video.play();
-      await startHandEngine(video);
-      setStatus('running');
-      start(); // leave onboarding
-    } catch {
-      // Permission refused or no camera — fall back gracefully.
+      stream = await navigator.mediaDevices.getUserMedia(WEBCAM_CONSTRAINTS);
+    } catch (err) {
+      console.error('[camera] getUserMedia failed:', err);
+      setError(
+        'Camera permission was blocked. Allow it via the camera icon in your browser’s address bar, then try again.',
+      );
       setStatus('denied');
+      return;
     }
-  }, [setStatus, start]);
+
+    streamRef.current = stream;
+    const video = videoRef.current!;
+    video.srcObject = stream;
+    try {
+      await video.play();
+    } catch (err) {
+      // Autoplay can reject on some browsers; the stream is still live.
+      console.warn('[camera] video.play() was interrupted:', err);
+    }
+
+    // Camera is live — enter the experience right away.
+    setStatus('running');
+    start();
+
+    // Bring hand tracking online in the background. Non-fatal: a failure here
+    // leaves the camera + scene working (mouse fallback for control).
+    startHandEngine(video).catch((err) => {
+      console.error('[gestures] hand tracking failed to start (camera still works):', err);
+    });
+  }, [setStatus, setError, start]);
 
   /** Continue with the mouse-only fallback (no camera). */
   const handleSkip = useCallback(() => {
     setStatus('unavailable');
     start();
   }, [setStatus, start]);
+
+  // Count the visit once she's through the gate ("she opened it").
+  useEffect(() => {
+    if (unlocked) void recordVisit();
+  }, [unlocked]);
 
   // Tear everything down on unmount.
   useEffect(() => {
@@ -73,12 +120,22 @@ export default function App() {
     };
   }, []);
 
+  // The login gate stands in front of everything until she signs in.
+  if (!unlocked) {
+    return (
+      <main className="relative h-screen w-screen overflow-hidden">
+        <LoginGate />
+      </main>
+    );
+  }
+
   return (
     <main className="relative h-screen w-screen overflow-hidden">
       <SceneErrorBoundary>
         <CanvasContainer />
       </SceneErrorBoundary>
 
+      <Sparkles />
       <Overlay />
 
       {/* The single shared webcam feed — offscreen, muted, inline. */}
@@ -91,7 +148,10 @@ export default function App() {
       />
 
       <WebcamPiP videoRef={videoRef} active={status === 'running'} />
+      <Guestbook />
+      <MusicToggle />
       <Onboarding onAllow={handleAllow} onSkip={handleSkip} />
+      <MomentOverlay />
       <LoadingScreen />
     </main>
   );

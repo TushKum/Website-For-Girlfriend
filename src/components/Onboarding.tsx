@@ -22,6 +22,7 @@ interface OnboardingProps {
 export default function Onboarding({ onAllow, onSkip }: OnboardingProps) {
   const status = useVisionStore((s) => s.status);
   const started = useVisionStore((s) => s.started);
+  const error = useVisionStore((s) => s.error);
 
   const requesting = status === 'requesting';
   const denied = status === 'denied';
@@ -36,50 +37,54 @@ export default function Onboarding({ onAllow, onSkip }: OnboardingProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Soft scrim so the card reads against the lively scene. */}
-          <div className="absolute inset-0 bg-cream/40 backdrop-blur-sm" />
+          {/* Brutalist scrim with exposed grid. */}
+          <div className="brutal-grid absolute inset-0 bg-cream/55 backdrop-blur-sm" />
 
           <motion.div
-            className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-white/70 bg-white/55 px-9 py-10 text-center shadow-[0_30px_90px_-30px_rgba(200,120,140,0.55)] backdrop-blur-2xl"
-            initial={{ opacity: 0, y: 24, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.97 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="brutal-card relative w-full max-w-md p-8 sm:p-9"
+            initial={{ opacity: 0, y: 24, rotate: -1 }}
+            animate={{ opacity: 1, y: 0, rotate: 0 }}
+            exit={{ opacity: 0, y: 16 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <GestureDemo />
+            <span className="brutal-chip absolute -left-3 -top-4 rotate-[-5deg] bg-rose-gold text-cream">
+              How to play
+            </span>
 
-            <p className="mt-6 font-sans text-[10px] uppercase tracking-[0.5em] text-rose-gold/80">
-              For You
-            </p>
-            <h1 className="mt-3 font-display text-3xl font-medium leading-tight text-rose-gold-deep">
-              Reach out and touch
-              <br /> our memories
-            </h1>
-            <p className="mx-auto mt-4 max-w-xs font-serif text-[17px] leading-relaxed text-[#7c645e]">
-              Allow your camera and use your hands — <em>pinch</em> to turn the
-              carousel, open your palm to draw it near, and <em>clap</em> to
-              release a flurry of hearts.
+            <div className="flex items-center gap-4">
+              <GestureDemo />
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose-gold-deep">
+                  [ for you ]
+                </p>
+                <h1 className="mt-1 font-grotesk text-3xl font-bold uppercase leading-[0.9] text-ink sm:text-4xl">
+                  Touch our
+                  <br /> memories
+                </h1>
+              </div>
+            </div>
+
+            <p className="mt-5 font-mono text-xs uppercase leading-relaxed tracking-wide text-ink/75">
+              Allow the camera &amp; use your hands — <span className="text-rose-gold-deep">pinch</span> to
+              turn, open palm to pull it near, <span className="text-rose-gold-deep">clap</span> for hearts,
+              <span className="text-rose-gold-deep"> pray</span> for lilies.
             </p>
 
             {denied && (
-              <p className="mt-4 font-sans text-xs text-rose-gold-deep/90">
-                Camera access was blocked — you can still explore with your mouse.
+              <p className="mt-5 border-4 border-ink bg-rose-gold/20 px-3 py-2 font-mono text-xs leading-relaxed text-rose-gold-deep">
+                {error ?? 'Camera access was blocked.'} Explore with your mouse below.
               </p>
             )}
 
-            <div className="mt-8 flex flex-col items-center gap-3">
-              <button
-                onClick={onAllow}
-                disabled={requesting}
-                className="group relative w-full overflow-hidden rounded-full bg-gradient-to-r from-rose-gold to-petal px-7 py-3.5 font-sans text-sm font-medium tracking-wide text-white shadow-lg shadow-rose-gold/30 transition-all duration-300 hover:shadow-xl hover:shadow-rose-gold/40 disabled:opacity-70"
-              >
+            <div className="mt-7 flex flex-col gap-3">
+              <button onClick={onAllow} disabled={requesting} className="brutal-btn-rose w-full text-base">
                 {requesting ? 'Waking the camera…' : 'Allow camera & begin'}
               </button>
               <button
                 onClick={onSkip}
-                className="font-sans text-xs tracking-wide text-[#9a807a] underline-offset-4 transition-colors hover:text-rose-gold-deep hover:underline"
+                className="font-mono text-[11px] uppercase tracking-widest text-ink/50 underline-offset-4 transition-colors hover:text-rose-gold-deep hover:underline"
               >
-                Explore without gestures
+                Explore without gestures →
               </button>
             </div>
           </motion.div>

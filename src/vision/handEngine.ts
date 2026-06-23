@@ -33,6 +33,10 @@ const CLAP_SPEED = 0.7; // normalized closing speed (per sec) required
 const CLAP_COOLDOWN_MS = 500; // min gap between claps
 const CLAP_POWER = 3.5; // burst magnitude of a clap flurry
 
+// ── Prayer pose (two hands together, fingers up) ─────────────────────────
+const PRAY_DIST = 0.34; // palm-to-palm distance counted as "pressed together"
+const PRAY_HOLD_MS = 280; // pose must be held this long before lilies come
+
 let landmarker: HandLandmarker | null = null;
 let video: HTMLVideoElement | null = null;
 let running = false;
@@ -54,6 +58,10 @@ let lastBurst = 0;
 let clapPrevDist = 1;
 let clapPrevTime = 0;
 let lastClap = 0;
+
+// Prayer bookkeeping.
+let prayStart = 0;
+let wasPraying = false;
 
 // Minimal typing for the (still not-everywhere-in-lib) rVFC API.
 type RVFCVideo = HTMLVideoElement & {
@@ -107,6 +115,7 @@ function tick(now: number): void {
     const result = landmarker.detectForVideo(video, ts);
     process(result.landmarks[0], now);
     detectClap(result.landmarks, now);
+    detectPrayer(result.landmarks, now);
     // Expose two-hand (clapping) posture so the carousel can hold still.
     handState.twoHands = (result.landmarks?.length ?? 0) >= 2;
   }
@@ -141,11 +150,50 @@ function detectClap(hands: NormalizedLandmark[][] | undefined, now: number): voi
   if (justMet && closing > CLAP_SPEED && now - lastClap > CLAP_COOLDOWN_MS) {
     const ndc = landmarkToNDC((a.x + b.x) / 2, (a.y + b.y) / 2);
     queueBurst(ndc.x, ndc.y, CLAP_POWER);
+    useVisionStore.getState().triggerMoment('heart'); // freeze + giant heart
     lastClap = now;
   }
 
   clapPrevDist = dist;
   clapPrevTime = now;
+}
+
+/** A hand whose index + middle fingertips sit clearly above its wrist. */
+function fingersUp(lm: NormalizedLandmark[]): boolean {
+  // Image y grows downward, so "up" means a smaller y than the wrist.
+  return lm[12].y < lm[0].y - 0.05 && lm[8].y < lm[0].y - 0.05;
+}
+
+/**
+ * Prayer detection: two hands pressed together with fingers pointing up, held
+ * briefly. Distinct from a clap (which is a fast impact) because this requires
+ * the upward orientation and a sustained hold. While held, `praying` stays true
+ * and the lily shower falls.
+ */
+function detectPrayer(hands: NormalizedLandmark[][] | undefined, now: number): void {
+  if (!hands || hands.length < 2) {
+    prayStart = 0;
+    handState.praying = false;
+    return;
+  }
+  const a = palmCenter(hands[0]);
+  const b = palmCenter(hands[1]);
+  const dist = Math.hypot(a.x - b.x, a.y - b.y);
+  const posed = dist < PRAY_DIST && fingersUp(hands[0]) && fingersUp(hands[1]);
+
+  if (posed) {
+    if (prayStart === 0) prayStart = now;
+    handState.praying = now - prayStart >= PRAY_HOLD_MS;
+  } else {
+    prayStart = 0;
+    handState.praying = false;
+  }
+
+  // Fire the giant-lily moment once, on the rising edge of the prayer pose.
+  if (handState.praying && !wasPraying) {
+    useVisionStore.getState().triggerMoment('lily');
+  }
+  wasPraying = handState.praying;
 }
 
 function process(landmarks: NormalizedLandmark[] | undefined, now: number): void {

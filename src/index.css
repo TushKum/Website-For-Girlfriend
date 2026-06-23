@@ -3,6 +3,52 @@
 @tailwind utilities;
 
 /*
+ * Neo-brutalist component layer — thick ink borders, hard offset shadows, and
+ * chunky type, all in the romantic blush palette. The "press" interaction
+ * (nudging into its own shadow) gives buttons a tactile, physical feel.
+ */
+@layer components {
+  .brutal-card {
+    @apply border-4 border-ink bg-cream shadow-brutal;
+  }
+
+  .brutal-btn {
+    @apply inline-flex items-center justify-center gap-2 border-4 border-ink bg-petal
+      px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.15em] text-ink
+      shadow-brutal transition-all duration-100
+      hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-brutal-lg
+      active:translate-x-[4px] active:translate-y-[4px] active:shadow-none
+      disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .brutal-btn-rose {
+    @apply brutal-btn bg-rose-gold text-cream;
+  }
+
+  .brutal-input {
+    @apply w-full border-4 border-ink bg-white px-4 py-3 font-mono text-ink
+      shadow-brutal-sm outline-none placeholder:text-ink/35
+      focus:shadow-brutal focus:-translate-x-[1px] focus:-translate-y-[1px]
+      transition-all duration-100;
+  }
+
+  .brutal-chip {
+    @apply inline-block border-4 border-ink bg-blush px-3 py-1 font-mono
+      text-xs font-bold uppercase tracking-[0.2em] text-ink;
+  }
+}
+
+@layer utilities {
+  /* Exposed grid — raw brutalist backdrop for the chrome surfaces. */
+  .brutal-grid {
+    background-image:
+      linear-gradient(rgba(22, 13, 17, 0.07) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(22, 13, 17, 0.07) 2px, transparent 2px);
+    background-size: 40px 40px;
+  }
+}
+
+/*
  * Global, app-wide styling.
  * The 3D canvas paints most of the screen, so the document itself is the
  * "stage" — a soft, glowing blush radial gradient that reads as a warm,
@@ -80,4 +126,54 @@
 .lux-scroll {
   scrollbar-width: thin;
   scrollbar-color: rgba(201, 139, 126, 0.35) transparent;
+}
+
+/*
+ * Y2K love accents — holographic gradient text + twinkling sparkles, the
+ * early-2000s "blingee" sheen layered over the brutalist frame.
+ */
+.holo-text {
+  background-image: linear-gradient(
+    100deg,
+    #ff5fa2 0%,
+    #b78bff 28%,
+    #7fd4ff 52%,
+    #ffe08a 70%,
+    #ff9ecf 86%,
+    #ff5fa2 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: holo-shift 6s linear infinite;
+}
+
+@keyframes holo-shift {
+  to {
+    background-position: 220% center;
+  }
+}
+
+.y2k-twinkle {
+  animation: y2k-twinkle 2.4s ease-in-out infinite;
+}
+
+@keyframes y2k-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.6) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo-text,
+  .y2k-twinkle {
+    animation: none;
+  }
 }
