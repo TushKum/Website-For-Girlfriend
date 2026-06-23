@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { MEMORIES } from '../data/memories';
 import { handState } from '../store/handState';
 import { pointerState } from '../store/pointerState';
 import { useMemoryStore } from '../store/useMemoryStore';
+import { useContentStore } from '../store/useContentStore';
 import PolaroidCard from './PolaroidCard';
 
 /** Rotation feel. */
@@ -37,6 +38,14 @@ export default function PhotoCarousel() {
   const gl = useThree((s) => s.gl);
 
   const selected = useMemoryStore((s) => s.selected);
+
+  // Seed memories + the ones she's added herself, hydrated once.
+  const userMemories = useContentStore((s) => s.memories);
+  const loadMemories = useContentStore((s) => s.loadMemories);
+  useEffect(() => {
+    void loadMemories();
+  }, [loadMemories]);
+  const allMemories = useMemo(() => [...MEMORIES, ...userMemories], [userMemories]);
 
   // Rotation state (refs → no re-renders).
   const angVel = useRef(AUTO_SPIN);
@@ -124,8 +133,8 @@ export default function PhotoCarousel() {
 
   return (
     <group ref={groupRef}>
-      {MEMORIES.map((memory, i) => (
-        <PolaroidCard key={memory.id} memory={memory} index={i} total={MEMORIES.length} />
+      {allMemories.map((memory, i) => (
+        <PolaroidCard key={memory.id} memory={memory} index={i} total={allMemories.length} />
       ))}
     </group>
   );

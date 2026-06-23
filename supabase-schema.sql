@@ -39,6 +39,29 @@ alter table public.memories enable row level security;
 create policy "read memories" on public.memories for select using (true);
 create policy "add memories"  on public.memories for insert with check (true);
 
+-- Her poems ------------------------------------------------------------------
+create table if not exists public.poems (
+  id         uuid primary key default gen_random_uuid(),
+  title      text not null default 'Untitled',
+  body       text not null,
+  created_at timestamptz not null default now()
+);
+alter table public.poems enable row level security;
+create policy "read poems" on public.poems for select using (true);
+create policy "add poems"  on public.poems for insert with check (true);
+
+-- Her paintings (image_path = public URL in the 'paintings' bucket) ----------
+create table if not exists public.paintings (
+  id         uuid primary key default gen_random_uuid(),
+  title      text not null default 'Untitled',
+  caption    text,
+  image_path text not null,
+  created_at timestamptz not null default now()
+);
+alter table public.paintings enable row level security;
+create policy "read paintings" on public.paintings for select using (true);
+create policy "add paintings"  on public.paintings for insert with check (true);
+
 -- Public storage bucket for uploaded photos ---------------------------------
 insert into storage.buckets (id, name, public)
 values ('memories', 'memories', true)
@@ -48,3 +71,13 @@ create policy "read memories bucket"
   on storage.objects for select using (bucket_id = 'memories');
 create policy "upload to memories bucket"
   on storage.objects for insert with check (bucket_id = 'memories');
+
+-- Public storage bucket for her uploaded paintings --------------------------
+insert into storage.buckets (id, name, public)
+values ('paintings', 'paintings', true)
+on conflict (id) do nothing;
+
+create policy "read paintings bucket"
+  on storage.objects for select using (bucket_id = 'paintings');
+create policy "upload to paintings bucket"
+  on storage.objects for insert with check (bucket_id = 'paintings');

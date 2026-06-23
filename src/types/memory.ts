@@ -6,8 +6,9 @@
  * of truth — components consume `Memory`, never loose props.
  */
 export interface Memory {
-  /** Stable unique identifier (also used as React key). */
-  id: number;
+  /** Stable unique identifier (also used as React key). Numbers for the seed
+   *  set; string UUIDs for memories she adds herself. */
+  id: number | string;
   /** Fully-qualified, pre-sized image URL (Unsplash placeholders for now). */
   imageURL: string;
   /** Short, evocative title shown in the tooltip and modal headline. */

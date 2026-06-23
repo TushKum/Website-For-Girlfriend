@@ -13,7 +13,7 @@ import type { Memory } from '../types/memory';
  */
 interface MemoryState {
   /** Id of the currently hovered plane (drives slow-down + scale + glow). */
-  hoveredId: number | null;
+  hoveredId: number | string | null;
   /** The memory whose reveal modal is open, or null when browsing. */
   selected: Memory | null;
   /**
@@ -27,7 +27,7 @@ interface MemoryState {
   loaded: number;
 
   // ── actions ────────────────────────────────────────────────────────────
-  setHovered: (id: number | null) => void;
+  setHovered: (id: number | string | null) => void;
   /** Open a memory and remember where it sits in world space. */
   select: (memory: Memory, worldPosition: THREE.Vector3) => void;
   /** Close the modal and hand the camera back to the user. */
