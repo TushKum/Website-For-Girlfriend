@@ -9,6 +9,8 @@ import LoginGate from './components/LoginGate';
 import Guestbook from './components/Guestbook';
 import Gallery from './components/Gallery';
 import CupcakeWidget from './components/Cupcake';
+import LoveDeck from './components/LoveDeck';
+import LoveLetter from './components/LoveLetter';
 import LoveCursor from './components/LoveCursor';
 import Sparkles from './components/Sparkles';
 import MusicToggle from './components/MusicToggle';
@@ -155,6 +157,8 @@ export default function App() {
       <Guestbook />
       <Gallery />
       <CupcakeWidget />
+      <LoveDeck />
+      <LoveLetter />
       <MusicToggle />
       <Onboarding onAllow={handleAllow} onSkip={handleSkip} />
       <MomentOverlay />
