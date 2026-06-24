@@ -25,7 +25,7 @@ alter table public.visits enable row level security;
 create policy "read visits" on public.visits for select using (true);
 create policy "add visits"  on public.visits for insert with check (true);
 
--- Her uploaded memories (for the photo-upload feature) ----------------------
+-- Her uploaded memories (photos & videos shown in the main 3D carousel) ------
 create table if not exists public.memories (
   id         uuid primary key default gen_random_uuid(),
   title      text,
@@ -33,8 +33,12 @@ create table if not exists public.memories (
   location   text,
   caption    text,
   image_path text,
+  media_type text not null default 'image' check (media_type in ('image', 'video')),
   created_at timestamptz not null default now()
 );
+-- For projects created before videos were supported, add the column in place:
+alter table public.memories
+  add column if not exists media_type text not null default 'image';
 alter table public.memories enable row level security;
 create policy "read memories" on public.memories for select using (true);
 create policy "add memories"  on public.memories for insert with check (true);

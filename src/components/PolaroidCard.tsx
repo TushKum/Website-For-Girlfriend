@@ -4,9 +4,10 @@ import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import type { Memory } from '../types/memory';
 import { useSafeTexture } from '../hooks/useSafeTexture';
+import { useCardVideoTexture } from '../hooks/useCardVideoTexture';
 import { useMemoryStore } from '../store/useMemoryStore';
 import { pointerState } from '../store/pointerState';
-import { getRoundedRectMask, getGlowTexture } from '../utils/textures';
+import { getRoundedRectMask, getGlowTexture, getPlayBadgeTexture } from '../utils/textures';
 import { CAROUSEL_RADIUS } from './sceneConfig';
 
 /** Polaroid frame + inset photo proportions (classic thick-bottom border). */
@@ -46,9 +47,10 @@ export default function PolaroidCard({ memory, index, total }: PolaroidCardProps
   const select = useMemoryStore((s) => s.select);
   const isHovered = hoveredId === memory.id;
 
-  const { texture } = useSafeTexture(memory.imageURL);
+  const isVideo = memory.mediaType === 'video';
   const frameMask = useMemo(() => getRoundedRectMask(3, 4), []);
   const glow = useMemo(() => getGlowTexture(), []);
+  const playBadge = useMemo(() => getPlayBadgeTexture(), []);
 
   // Static placement on the ring (faces outward; rides parent rotation).
   const angle = (index / total) * Math.PI * 2;
@@ -130,11 +132,22 @@ export default function PolaroidCard({ memory, index, total }: PolaroidCardProps
           />
         </mesh>
 
-        {/* The photograph, inset with a thick bottom border. */}
+        {/* The photo or video, inset with a thick bottom border. */}
         <mesh position={[0, PHOTO_Y, 0.02]} raycast={() => null}>
           <planeGeometry args={[PHOTO_W, PHOTO_H]} />
-          <meshStandardMaterial map={texture} roughness={0.85} metalness={0} side={THREE.DoubleSide} />
+          <MediaMaterial memory={memory} />
         </mesh>
+
+        {/* "Play" badge in the lower-right corner of video cards. */}
+        {isVideo && (
+          <mesh
+            position={[PHOTO_W / 2 - 0.19, PHOTO_Y - PHOTO_H / 2 + 0.19, 0.03]}
+            raycast={() => null}
+          >
+            <planeGeometry args={[0.26, 0.26]} />
+            <meshBasicMaterial map={playBadge} transparent depthWrite={false} toneMapped={false} />
+          </mesh>
+        )}
 
         {/* Tooltip — only for the hovered card. */}
         {isHovered && !isModalOpen && (
@@ -152,4 +165,24 @@ export default function PolaroidCard({ memory, index, total }: PolaroidCardProps
       </group>
     </group>
   );
+}
+
+/**
+ * The inset photo/video material. Split into its own component (and a stable
+ * branch on `mediaType`) so each media kind owns its loader hook without
+ * violating the rules of hooks — a memory never switches type at runtime.
+ */
+function MediaMaterial({ memory }: { memory: Memory }) {
+  if (memory.mediaType === 'video') return <VideoMaterial url={memory.imageURL} />;
+  return <ImageMaterial url={memory.imageURL} />;
+}
+
+function ImageMaterial({ url }: { url: string }) {
+  const { texture } = useSafeTexture(url);
+  return <meshStandardMaterial map={texture} roughness={0.85} metalness={0} side={THREE.DoubleSide} />;
+}
+
+function VideoMaterial({ url }: { url: string }) {
+  const texture = useCardVideoTexture(url);
+  return <meshStandardMaterial map={texture} roughness={0.6} metalness={0} side={THREE.DoubleSide} />;
 }

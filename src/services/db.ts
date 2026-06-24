@@ -335,11 +335,13 @@ interface MemoryRow {
   location: string;
   caption: string;
   image_path: string;
+  media_type?: 'image' | 'video' | null;
   created_at: string;
 }
 const rowToMemory = (r: MemoryRow): Memory => ({
   id: String(r.id),
   imageURL: r.image_path,
+  mediaType: r.media_type ?? 'image',
   title: r.title,
   date: r.date,
   location: r.location,
@@ -359,7 +361,10 @@ export async function listMemories(): Promise<Memory[]> {
   return read<Memory[]>(MEMS_KEY, []);
 }
 
-/** Upload + save a photo memory (image → Supabase Storage, or a local data-URL). */
+/**
+ * Upload + save a memory that lands in the main 3D carousel. Accepts a photo OR
+ * a video; the media goes to Supabase Storage (or a local data-URL fallback).
+ */
 export async function addMemory(input: MemoryInput, file: File): Promise<Memory> {
   const meta = {
     title: input.title.trim() || 'Untitled',
@@ -367,18 +372,21 @@ export async function addMemory(input: MemoryInput, file: File): Promise<Memory>
     location: input.location.trim(),
     caption: input.caption.trim(),
   };
+  const mediaType: 'image' | 'video' = file.type.startsWith('video/') ? 'video' : 'image';
 
   if (supabase) {
-    const ext = file.name.split('.').pop() || 'jpg';
+    const ext = file.name.split('.').pop() || (mediaType === 'video' ? 'mp4' : 'jpg');
     const path = `${genId()}.${ext}`;
     const up = await supabase.storage.from('memories').upload(path, file);
     if (!up.error) {
       const { data: pub } = supabase.storage.from('memories').getPublicUrl(path);
-      const { data, error } = await supabase
-        .from('memories')
-        .insert({ ...meta, image_path: pub.publicUrl })
-        .select()
-        .single();
+      // Only send media_type for videos so photo inserts stay compatible with a
+      // pre-migration schema (the column defaults to 'image' once added).
+      const payload =
+        mediaType === 'video'
+          ? { ...meta, image_path: pub.publicUrl, media_type: 'video' }
+          : { ...meta, image_path: pub.publicUrl };
+      const { data, error } = await supabase.from('memories').insert(payload).select().single();
       if (!error && data) return rowToMemory(data as MemoryRow);
       console.warn('[db] addMemory insert fell back to local:', error?.message);
     } else {
@@ -386,12 +394,25 @@ export async function addMemory(input: MemoryInput, file: File): Promise<Memory>
     }
   }
 
-  const imageURL = await fileToDataURL(file);
-  const memory: Memory = { id: genId(), imageURL, ...meta };
+  // Local fallback: downscale photos to a compact JPEG; keep video bytes as-is.
+  // (Large videos may exceed the localStorage quota — the write degrades
+  // gracefully and the memory still shows for the current session.)
+  const imageURL = mediaType === 'video' ? await fileToRawDataURL(file) : await fileToDataURL(file);
+  const memory: Memory = { id: genId(), imageURL, mediaType, ...meta };
   const list = read<Memory[]>(MEMS_KEY, []);
   list.unshift(memory);
   write(MEMS_KEY, list);
   return memory;
+}
+
+/** Read any file straight to a base64 data-URL (no re-encoding) — used for video. */
+function fileToRawDataURL(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error('Could not read that file'));
+    reader.readAsDataURL(file);
+  });
 }
 
 /** Load an image file, downscale it, and return a compact JPEG data-URL. */

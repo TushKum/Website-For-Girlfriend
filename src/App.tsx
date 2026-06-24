@@ -9,6 +9,7 @@ import LoginGate from './components/LoginGate';
 import Guestbook from './components/Guestbook';
 import Gallery from './components/Gallery';
 import CupcakeWidget from './components/Cupcake';
+import AddMemory from './components/AddMemory';
 import LoveDeck from './components/LoveDeck';
 import LoveLetter from './components/LoveLetter';
 import LoveCursor from './components/LoveCursor';
@@ -157,6 +158,7 @@ export default function App() {
       <Guestbook />
       <Gallery />
       <CupcakeWidget />
+      <AddMemory />
       <LoveDeck />
       <LoveLetter />
       <MusicToggle />

@@ -12,6 +12,7 @@ let roundedMask: THREE.CanvasTexture | null = null;
 let glowSprite: THREE.CanvasTexture | null = null;
 let dustSprite: THREE.CanvasTexture | null = null;
 let placeholder: THREE.CanvasTexture | null = null;
+let playBadge: THREE.CanvasTexture | null = null;
 
 /**
  * A white, anti-aliased rounded-rectangle on transparency.
@@ -141,6 +142,44 @@ export function getPlaceholderTexture(): THREE.CanvasTexture {
   placeholder.colorSpace = THREE.SRGBColorSpace;
   placeholder.needsUpdate = true;
   return placeholder;
+}
+
+/**
+ * A small "play" badge — a rounded ink chip with a white triangle, drawn on
+ * transparency — overlaid in the corner of video cards so they read as footage
+ * at a glance (even before the first frame paints). Shared singleton.
+ */
+export function getPlayBadgeTexture(): THREE.CanvasTexture {
+  if (playBadge) return playBadge;
+
+  const size = 128;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d')!;
+
+  // Soft circular chip.
+  ctx.fillStyle = 'rgba(22, 13, 17, 0.78)';
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, size * 0.42, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.lineWidth = size * 0.05;
+  ctx.strokeStyle = 'rgba(255, 247, 243, 0.92)';
+  ctx.stroke();
+
+  // White play triangle, optically centred.
+  ctx.fillStyle = '#fff7f3';
+  ctx.beginPath();
+  ctx.moveTo(size * 0.42, size * 0.32);
+  ctx.lineTo(size * 0.42, size * 0.68);
+  ctx.lineTo(size * 0.72, size * 0.5);
+  ctx.closePath();
+  ctx.fill();
+
+  playBadge = new THREE.CanvasTexture(canvas);
+  playBadge.colorSpace = THREE.SRGBColorSpace;
+  playBadge.needsUpdate = true;
+  return playBadge;
 }
 
 /** Trace a rounded-rectangle path (helper for the mask). */

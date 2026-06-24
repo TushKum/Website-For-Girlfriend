@@ -9,8 +9,11 @@ export interface Memory {
   /** Stable unique identifier (also used as React key). Numbers for the seed
    *  set; string UUIDs for memories she adds herself. */
   id: number | string;
-  /** Fully-qualified, pre-sized image URL (Unsplash placeholders for now). */
+  /** Fully-qualified media URL. For a photo it's the image; for a video it's
+   *  the video file (played muted+looping on the card, with sound in the modal). */
   imageURL: string;
+  /** What `imageURL` points at. Absent → treat as 'image' (the seed set). */
+  mediaType?: 'image' | 'video';
   /** Short, evocative title shown in the tooltip and modal headline. */
   title: string;
   /** Human-readable date string, e.g. "12 February 2024". */

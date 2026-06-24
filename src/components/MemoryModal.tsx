@@ -27,6 +27,7 @@ const hiRes = (url: string): string =>
  */
 export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
   const [imgLoaded, setImgLoaded] = useState(false);
+  const isVideo = memory.mediaType === 'video';
 
   return (
     <motion.div
@@ -62,15 +63,29 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
               imgLoaded ? 'opacity-0' : 'opacity-100'
             }`}
           />
-          <img
-            src={hiRes(memory.imageURL)}
-            alt={memory.title}
-            onLoad={() => setImgLoaded(true)}
-            className={`h-full w-full object-cover transition-all duration-[1200ms] ease-out ${
-              imgLoaded ? 'scale-100 opacity-100 blur-0' : 'scale-105 opacity-0 blur-md'
-            }`}
-            draggable={false}
-          />
+          {isVideo ? (
+            <video
+              src={memory.imageURL}
+              autoPlay
+              loop
+              playsInline
+              controls
+              onLoadedData={() => setImgLoaded(true)}
+              className={`h-full w-full bg-ink object-contain transition-opacity duration-700 ${
+                imgLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ) : (
+            <img
+              src={hiRes(memory.imageURL)}
+              alt={memory.title}
+              onLoad={() => setImgLoaded(true)}
+              className={`h-full w-full object-cover transition-all duration-[1200ms] ease-out ${
+                imgLoaded ? 'scale-100 opacity-100 blur-0' : 'scale-105 opacity-0 blur-md'
+              }`}
+              draggable={false}
+            />
+          )}
           {/* Cinematic edge gradient for seamless blend into the glass. */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-white/25" />
         </div>
@@ -82,12 +97,14 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.18, duration: 0.7, ease: 'easeOut' }}
           >
-            {/* Date · Location eyebrow. */}
-            <p className="inline-block border-4 border-ink bg-blush px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-ink">
-              {memory.date}
-              <span className="mx-1.5 text-ink/40">/</span>
-              {memory.location}
-            </p>
+            {/* Date · Location eyebrow (either part may be blank for her own adds). */}
+            {(memory.date || memory.location) && (
+              <p className="inline-block border-4 border-ink bg-blush px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-ink">
+                {memory.date}
+                {memory.date && memory.location && <span className="mx-1.5 text-ink/40">/</span>}
+                {memory.location}
+              </p>
+            )}
 
             {/* Title. */}
             <h2 className="mt-4 font-grotesk text-4xl font-bold uppercase leading-[0.92] text-ink text-balance md:text-5xl">
